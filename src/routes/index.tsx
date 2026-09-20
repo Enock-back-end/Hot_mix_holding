@@ -456,8 +456,17 @@ function GalleryModal({
               ))}
             </div>
           </div>
-          <aside className="bg-background p-5 text-foreground sm:p-6">
+          <aside className="order-first bg-background p-5 text-foreground sm:p-6 lg:order-none">
             <p className="text-sm leading-6 text-muted-foreground">{product.description}</p>
+            <h3 className="mt-6 font-display text-lg font-bold">Why customers choose this</h3>
+            <ul className="mt-3 space-y-2 text-sm leading-6 text-muted-foreground">
+              {product.reasonsToChoose.map((reason) => (
+                <li key={reason} className="flex gap-2">
+                  <Check className="mt-1 size-4 shrink-0 text-timber" />
+                  {reason}
+                </li>
+              ))}
+            </ul>
             <h3 className="mt-6 font-display text-lg font-bold">What you can see</h3>
             <ul className="mt-3 space-y-2 text-sm leading-6 text-muted-foreground">
               {product.details.map((detail) => (
@@ -470,6 +479,9 @@ function GalleryModal({
             <h3 className="mt-6 font-display text-lg font-bold">Ideal for</h3>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
               {product.idealFor.join(" · ")}
+            </p>
+            <p className="mt-6 border-l-2 border-timber bg-muted px-4 py-3 text-sm leading-6 text-foreground">
+              {product.quotePrompt}
             </p>
             <div className="mt-7 grid gap-3">
               <Button asChild>
@@ -519,11 +531,11 @@ function ProductCard({ product, open }: { product: Product; open: () => void }) 
         </ul>
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
           <Button type="button" variant="outline" onClick={open}>
-            View More <Expand />
+            Explore Photos <Expand />
           </Button>
           <Button asChild>
             <QuoteLink channel="whatsapp" productName={product.name}>
-              Request a Quote <ArrowRight />
+              Get My Quote <ArrowRight />
             </QuoteLink>
           </Button>
         </div>
