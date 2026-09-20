@@ -344,7 +344,7 @@ function GalleryModal({
 
   return (
     <div
-      className="fixed inset-0 z-[60] overflow-y-auto bg-slate/95 p-3 sm:p-6"
+      className="fixed inset-0 z-[60] w-full max-w-[100vw] box-border overflow-x-hidden overflow-y-auto bg-slate/95 p-3 sm:p-6"
       role="dialog"
       aria-modal="true"
       aria-label={`${product.name} gallery`}
@@ -383,7 +383,7 @@ function GalleryModal({
                 loading="eager"
                 fetchPriority="high"
                 decoding="async"
-                className="max-h-[68svh] w-full object-contain transition-opacity duration-200 ease-out"
+                className="mx-auto block h-auto w-auto max-h-[90vh] max-w-full object-contain transition-opacity duration-200 ease-out"
                 style={{ willChange: "transform" }}
               />
               <button
