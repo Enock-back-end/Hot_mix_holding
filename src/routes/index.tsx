@@ -12,7 +12,7 @@ import {
   MessageCircle,
   X,
 } from "lucide-react";
-import { useEffect, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import heroImage from "@/assets/cabin-hero.jpg";
 import { Button } from "@/components/ui/button";
 import {
@@ -285,8 +285,18 @@ function GalleryModal({
   onClose: () => void;
 }) {
   const [index, setIndex] = useState(initialIndex);
-  const move = (direction: number) =>
-    setIndex((value) => (value + direction + product.images.length) % product.images.length);
+  const touchStartX = useRef<number | null>(null);
+
+  const move = useCallback(
+    (direction: number) => {
+      setIndex((value) => {
+        if (product.images.length === 0) return 0;
+        return (value + direction + product.images.length) % product.images.length;
+      });
+    },
+    [product.images.length],
+  );
+
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
@@ -295,7 +305,43 @@ function GalleryModal({
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [product.images.length, onClose]);
+  }, [move, onClose]);
+
+  useEffect(() => {
+    if (product.images.length === 0) return;
+
+    const preloadUrls = [
+      product.images[index],
+      product.images[(index + 1) % product.images.length],
+      product.images[(index - 1 + product.images.length) % product.images.length],
+    ];
+
+    preloadUrls.forEach((src) => {
+      if (!src) return;
+      const image = new Image();
+      image.src = src;
+      image.decoding = "async";
+      image.loading = "eager";
+    });
+  }, [index, product.images]);
+
+  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    touchStartX.current = event.clientX;
+  };
+
+  const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (touchStartX.current === null) return;
+
+    const deltaX = event.clientX - touchStartX.current;
+    if (Math.abs(deltaX) > 52) {
+      move(deltaX > 0 ? -1 : 1);
+    }
+
+    touchStartX.current = null;
+  };
+
+  const currentImage = product.images[index] ?? product.images[0];
+
   return (
     <div
       className="fixed inset-0 z-[60] overflow-y-auto bg-slate/95 p-3 sm:p-6"
@@ -322,11 +368,23 @@ function GalleryModal({
         </div>
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_280px]">
           <div>
-            <div className="relative flex min-h-[45svh] items-center justify-center bg-black">
+            <div
+              className="relative flex min-h-[45svh] items-center justify-center overflow-hidden bg-black"
+              onPointerDown={handlePointerDown}
+              onPointerUp={handlePointerUp}
+              onPointerLeave={() => {
+                touchStartX.current = null;
+              }}
+              style={{ touchAction: "pan-y", overscrollBehavior: "contain" }}
+            >
               <img
-                src={product.images[index]}
+                src={currentImage}
                 alt={`${product.name} project image ${index + 1}`}
-                className="max-h-[68svh] w-full object-contain"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
+                className="max-h-[68svh] w-full object-contain transition-opacity duration-200 ease-out"
+                style={{ willChange: "transform" }}
               />
               <button
                 type="button"
@@ -349,13 +407,19 @@ function GalleryModal({
               {product.images.map((src, imageIndex) => (
                 <button
                   type="button"
-                  key={src}
+                  key={`${product.id}-${src}-${imageIndex}`}
                   onClick={() => setIndex(imageIndex)}
                   aria-label={`View image ${imageIndex + 1}`}
                   aria-current={imageIndex === index}
                   className={`h-16 w-20 shrink-0 overflow-hidden border-2 ${imageIndex === index ? "border-timber-light" : "border-transparent opacity-65"}`}
                 >
-                  <img src={src} alt="" loading="lazy" className="h-full w-full object-cover" />
+                  <img
+                    src={src}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    className="h-full w-full object-cover"
+                  />
                 </button>
               ))}
             </div>
