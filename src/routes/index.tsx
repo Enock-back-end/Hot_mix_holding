@@ -298,6 +298,15 @@ function GalleryModal({
   );
 
   useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, []);
+
+  useEffect(() => {
     const handler = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
       if (event.key === "ArrowLeft") move(-1);
@@ -348,6 +357,7 @@ function GalleryModal({
       role="dialog"
       aria-modal="true"
       aria-label={`${product.name} gallery`}
+      style={{ overscrollBehavior: "none", WebkitOverflowScrolling: "touch" }}
     >
       <div className="mx-auto max-w-6xl">
         <div className="mb-3 flex items-center justify-between gap-3 text-slate-foreground">
