@@ -379,7 +379,7 @@ function GalleryModal({
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_280px]">
           <div>
             <div
-              className="relative flex min-h-[45svh] items-center justify-center overflow-hidden bg-black"
+              className="relative flex h-[min(60svh,32rem)] min-h-[18rem] w-full items-center justify-center overflow-hidden bg-black sm:h-[min(68svh,36rem)]"
               onPointerDown={handlePointerDown}
               onPointerUp={handlePointerUp}
               onPointerLeave={() => {
@@ -393,7 +393,7 @@ function GalleryModal({
                 loading="eager"
                 fetchPriority="high"
                 decoding="async"
-                className="mx-auto block h-auto w-auto max-h-[90vh] max-w-full object-contain transition-opacity duration-200 ease-out"
+                className="block h-full w-full max-h-full max-w-full object-contain transition-opacity duration-200 ease-out"
                 style={{ willChange: "transform" }}
               />
               <button
