@@ -174,9 +174,13 @@
     font-family: var(--font-sans);
     letter-spacing: 0;
     margin: 0;
+    max-width: 100%;
+    overflow-x: clip;
   }
 
   html {
+    max-width: 100%;
+    overflow-x: clip;
     scroll-behavior: smooth;
   }
 

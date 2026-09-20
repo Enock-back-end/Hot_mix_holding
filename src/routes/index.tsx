@@ -351,7 +351,7 @@ function GalleryModal({
     >
       <div className="mx-auto max-w-6xl">
         <div className="mb-3 flex items-center justify-between gap-3 text-slate-foreground">
-          <div>
+          <div className="min-w-0">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-timber-light">
               {product.portfolioCategory}
             </p>
@@ -361,7 +361,7 @@ function GalleryModal({
             type="button"
             onClick={onClose}
             aria-label="Close gallery"
-            className="grid size-11 place-items-center border border-white/30 hover:bg-white/10"
+            className="grid size-11 shrink-0 place-items-center border border-white/30 hover:bg-white/10"
           >
             <X />
           </button>
@@ -528,7 +528,7 @@ function Index() {
           <div className="absolute inset-0 bg-hero-scrim/65" />
           <div className="relative mx-auto flex min-h-[calc(100svh-4.5rem)] max-w-7xl items-end px-4 pb-16 pt-28 sm:px-6 lg:min-h-[780px] lg:items-center lg:px-8 lg:pb-24 lg:pt-24">
             <div className="max-w-3xl">
-              <p className="mb-5 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-hero-muted">
+              <p className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-bold uppercase tracking-[0.2em] text-hero-muted">
                 <span className="h-px w-10 bg-timber" />
                 Hot Mix Holdings (Pty) Ltd · Pretoria, South Africa
               </p>
@@ -538,7 +538,7 @@ function Index() {
               <p className="mt-6 max-w-xl text-base leading-7 text-hero-muted sm:text-lg">
                 Explore real projects, then tell us about your space for a custom quote.
               </p>
-              <div className="mt-8 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap">
+              <div className="mt-8 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2 sm:flex sm:flex-wrap">
                 <Button asChild size="lg">
                   <QuoteLink channel="whatsapp">
                     <MessageCircle />
@@ -645,9 +645,9 @@ function Index() {
                     src={image.src}
                     alt={image.alt}
                     loading="lazy"
-                    className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                    className="h-full w-full object-cover object-center transition duration-300 group-hover:scale-105"
                   />
-                  <span className="absolute inset-x-0 bottom-0 bg-black/65 p-2 text-xs font-bold text-white opacity-0 transition group-hover:opacity-100 group-focus:opacity-100">
+                  <span className="absolute inset-x-0 bottom-0 bg-black/65 p-2 text-xs font-bold text-white opacity-100 transition sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus:opacity-100">
                     {image.productName}
                   </span>
                 </button>
