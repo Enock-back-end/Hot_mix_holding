@@ -377,7 +377,29 @@ function GalleryModal({
           </button>
         </div>
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_280px]">
-          <div>
+          <div className="sm:hidden">
+            <p className="mb-3 text-sm text-slate-foreground/80">
+              Scroll to browse all {product.images.length} project photos.
+            </p>
+            <div className="space-y-3">
+              {product.images.map((src, imageIndex) => (
+                <figure key={`${product.id}-${src}-${imageIndex}`} className="overflow-hidden bg-black">
+                  <img
+                    src={src}
+                    alt={`${product.name} project image ${imageIndex + 1}`}
+                    loading={imageIndex < 2 ? "eager" : "lazy"}
+                    fetchPriority={imageIndex === 0 ? "high" : "auto"}
+                    decoding="async"
+                    className="block h-auto max-h-[75svh] w-full object-contain"
+                  />
+                  <figcaption className="bg-black px-3 py-2 text-xs font-bold text-white/85">
+                    Photo {imageIndex + 1} of {product.images.length}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+          <div className="hidden sm:block">
             <div
               className="relative flex h-[min(60svh,32rem)] min-h-[18rem] w-full items-center justify-center overflow-hidden bg-black sm:h-[min(68svh,36rem)]"
               onPointerDown={handlePointerDown}
