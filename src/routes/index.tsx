@@ -6,13 +6,14 @@ import {
   ChevronRight,
   Expand,
   Facebook,
+  Instagram,
   Mail,
   MapPin,
   Menu,
   MessageCircle,
   X,
 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import heroImage from "@/assets/cabin-hero.jpg";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,7 +22,13 @@ import {
   reportQuoteConversion,
   type QuoteRequest,
 } from "@/lib/contact";
-import { portfolioImages, products, type Product } from "@/lib/products";
+import {
+  portfolioImages,
+  products,
+  type Product,
+  type ProjectStage,
+  type ProjectTransformation,
+} from "@/lib/products";
 
 const FILTERS = [
   "All",
@@ -107,6 +114,15 @@ function Header() {
             <Facebook className="size-4" aria-hidden="true" />
             <span className="hidden sm:inline">Facebook</span>
           </a>
+          <a
+            href="https://www.instagram.com/brendonsibandasibanda/"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Visit Hot Mix Holdings on Instagram"
+            className="inline-flex size-10 items-center justify-center rounded-md border border-primary text-primary transition-colors hover:bg-primary hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <Instagram className="size-4" aria-hidden="true" />
+          </a>
           <Button asChild className="hidden sm:inline-flex">
             <a href="#quote-form">Get a Quote</a>
           </Button>
@@ -150,6 +166,14 @@ function Header() {
               className="border-b border-border py-4 font-semibold text-foreground"
             >
               Visit us on Facebook
+            </a>
+            <a
+              href="https://www.instagram.com/brendonsibandasibanda/"
+              target="_blank"
+              rel="noreferrer"
+              className="border-b border-border py-4 font-semibold text-foreground"
+            >
+              Visit us on Instagram
             </a>
             <Button asChild className="mt-4 sm:hidden">
               <a href="#quote-form" onClick={() => setOpen(false)}>
@@ -275,6 +299,132 @@ function QuoteForm() {
   );
 }
 
+const PROJECT_STAGES: ProjectStage[] = ["Before", "During", "After"];
+
+function TransformationViewer({
+  transformations,
+  productName,
+}: {
+  transformations: ProjectTransformation[];
+  productName: string;
+}) {
+  const [projectIndex, setProjectIndex] = useState(0);
+  const project = transformations[projectIndex];
+  const availableStages = useMemo(
+    () => PROJECT_STAGES.filter((stage) => project.stages[stage]),
+    [project],
+  );
+  const [stage, setStage] = useState<ProjectStage>(availableStages[0]);
+  const stageIndex = availableStages.indexOf(stage);
+  const image = project.stages[stage];
+
+  useEffect(() => {
+    setStage(availableStages[0]);
+  }, [availableStages]);
+
+  useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return;
+    }
+
+    const timer = window.setInterval(() => {
+      setStage((currentStage) => {
+        const currentIndex = availableStages.indexOf(currentStage);
+        return availableStages[(currentIndex + 1) % availableStages.length];
+      });
+    }, 3200);
+
+    return () => window.clearInterval(timer);
+  }, [availableStages]);
+
+  return (
+    <section
+      className="border border-border bg-background p-4 sm:p-5"
+      aria-label={`${productName} project transformations`}
+    >
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-timber">
+            Project journey
+          </p>
+          <h3 className="mt-1 font-display text-lg font-extrabold">See the transformation</h3>
+        </div>
+        <div className="flex gap-1.5" aria-label="Choose a numbered project">
+          {transformations.map((item, index) => (
+            <button
+              type="button"
+              key={item.number}
+              onClick={() => setProjectIndex(index)}
+              aria-label={`View project ${item.number}`}
+              aria-pressed={index === projectIndex}
+              className={`grid size-9 place-items-center rounded-full text-sm font-bold transition-colors ${index === projectIndex ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-accent"}`}
+            >
+              {item.number}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="mt-4 overflow-hidden bg-black">
+        <div className="relative aspect-[4/3]">
+          {image && (
+            <img
+              key={`${project.number}-${stage}`}
+              src={image}
+              alt={`${productName} project ${project.number}: ${stage.toLowerCase()} stage`}
+              className="h-full w-full object-contain motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-[0.98] motion-safe:duration-500"
+            />
+          )}
+          <span className="absolute left-3 top-3 rounded-full bg-black/70 px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-white">
+            {stage}
+          </span>
+          <span className="absolute bottom-3 right-3 rounded-full bg-black/70 px-3 py-1 text-xs font-bold text-white">
+            Project {project.number}
+          </span>
+        </div>
+      </div>
+      <div className="mt-3 grid grid-cols-3 gap-2" aria-label="Choose a stage">
+        {PROJECT_STAGES.map((item) => {
+          const stageImage = project.stages[item];
+          const isAvailable = Boolean(stageImage);
+          const isActive = item === stage;
+          return (
+            <button
+              type="button"
+              key={item}
+              disabled={!isAvailable}
+              onClick={() => setStage(item)}
+              className={`relative overflow-hidden border-2 text-left transition-all ${isActive ? "border-timber" : "border-transparent"} ${isAvailable ? "hover:border-timber-light" : "cursor-not-allowed opacity-35"}`}
+            >
+              <div className="aspect-[4/3] bg-muted">
+                {stageImage && (
+                  <img
+                    src={stageImage}
+                    alt=""
+                    loading="lazy"
+                    className="h-full w-full object-cover"
+                  />
+                )}
+              </div>
+              <span
+                className={`block px-2 py-1.5 text-xs font-bold ${isActive ? "bg-timber text-timber-foreground" : "bg-muted text-muted-foreground"}`}
+              >
+                {item}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      <p className="mt-3 text-xs leading-5 text-muted-foreground">
+        This view moves through the stages automatically. Select a numbered project or stage to
+        explore at your own pace.
+      </p>
+    </section>
+  );
+}
+
 function GalleryModal({
   product,
   initialIndex,
@@ -383,7 +533,10 @@ function GalleryModal({
             </p>
             <div className="space-y-3">
               {product.images.map((src, imageIndex) => (
-                <figure key={`${product.id}-${src}-${imageIndex}`} className="overflow-hidden bg-black">
+                <figure
+                  key={`${product.id}-${src}-${imageIndex}`}
+                  className="overflow-hidden bg-black"
+                >
                   <img
                     src={src}
                     alt={`${product.name} project image ${imageIndex + 1}`}
@@ -458,6 +611,14 @@ function GalleryModal({
           </div>
           <aside className="order-first bg-background p-5 text-foreground sm:p-6 lg:order-none">
             <p className="text-sm leading-6 text-muted-foreground">{product.description}</p>
+            {product.transformations && product.transformations.length > 0 && (
+              <div className="mt-6">
+                <TransformationViewer
+                  transformations={product.transformations}
+                  productName={product.name}
+                />
+              </div>
+            )}
             <h3 className="mt-6 font-display text-lg font-bold">Why customers choose this</h3>
             <ul className="mt-3 space-y-2 text-sm leading-6 text-muted-foreground">
               {product.reasonsToChoose.map((reason) => (
@@ -825,6 +986,15 @@ function Index() {
               >
                 <Facebook className="size-4" />
                 Facebook
+              </a>
+              <a
+                href="https://www.instagram.com/brendonsibandasibanda/"
+                target="_blank"
+                rel="noreferrer"
+                className="flex gap-2"
+              >
+                <Instagram className="size-4" />
+                Instagram
               </a>
             </div>
           </div>

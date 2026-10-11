@@ -10,12 +10,7 @@ export type Product = {
   id: string;
   name: string;
   portfolioCategory:
-    | "Nutec Cabins"
-    | "Log Cabins"
-    | "Wendy Houses"
-    | "Decking"
-    | "Pergolas"
-    | "Other";
+    "Nutec Cabins" | "Log Cabins" | "Wendy Houses" | "Decking" | "Pergolas" | "Other";
   description: string;
   details: string[];
   idealFor: string[];
@@ -23,7 +18,71 @@ export type Product = {
   quotePrompt: string;
   coverImage: string;
   images: string[];
+  transformations?: ProjectTransformation[];
 };
+
+export type ProjectStage = "Before" | "During" | "After";
+
+export type ProjectTransformation = {
+  number: number;
+  stages: Partial<Record<ProjectStage, string>>;
+};
+
+const productImage = (folder: string, filename: string) => `/products/${folder}/${filename}`;
+
+const nutecTransformations: ProjectTransformation[] = [
+  [2, "nutec cabins 2 before.jpeg", undefined, "nutec cabins 2 after.jpeg"],
+  [3, "nutec cabins 3 before.jpeg", undefined, "nutec cabins 3 after.jpeg"],
+  [4, "nutec cabins 4 before.jpeg", undefined, "nutec cabins 4 after.jpeg"],
+  [5, "nutec cabins 5 before.jpeg", "nutec cabins 5 during.jpeg", "nutec cabins 5 after.jpeg"],
+  [6, "nutec cabins 6 before.jpeg", "nutec cabins 6 during .jpeg", "nutec cabins 6 after.jpeg"],
+  [7, "nutec cabins 7 before.jpeg", "nutec cabins 7 during.jpeg", "nutec cabins 7 after.jpeg"],
+  [8, "nutec cabins 8 before.jpeg", "nutec cabins 8 during.jpeg", "nutec cabins 8 after.jpeg"],
+].map(([number, before, during, after]) => ({
+  number: number as number,
+  stages: {
+    Before: productImage("Nutec cabins ", before as string),
+    ...(during ? { During: productImage("Nutec cabins ", during as string) } : {}),
+    After: productImage("Nutec cabins ", after as string),
+  },
+}));
+
+const pergolaTransformations: ProjectTransformation[] = [
+  [1, "pergola shades 1 before.jpeg", undefined, "pergola shades 1 after.jpeg"],
+  [2, "pergola shades 2 before.jpeg.jpg", undefined, "pergola shades 2 after.jpeg"],
+  [
+    3,
+    "pergola shades 3 before.jpeg",
+    "pergola shades 3 during.jpeg",
+    "pergola shades 3 after.jpeg.jpg",
+  ],
+  [
+    4,
+    "pergola shades 4 before.jpeg",
+    "pergola shades 4 during.jpeg",
+    "pergola shades 4 after.jpeg",
+  ],
+  [5, "pergola shades 5 before.jpeg", undefined, "pergola shades 5 after.jpeg"],
+  [6, "pergola shades 6 before.jpeg", undefined, "pergola shades 6 after.jpeg"],
+  [7, "pergola shades 7 before.jpeg", undefined, "pergola shades 7 after.jpeg"],
+].map(([number, before, during, after]) => ({
+  number: number as number,
+  stages: {
+    Before: productImage("Pergola shades", before as string),
+    ...(during ? { During: productImage("Pergola shades", during as string) } : {}),
+    After: productImage("Pergola shades", after as string),
+  },
+}));
+
+const wendyTransformations: ProjectTransformation[] = [
+  {
+    number: 1,
+    stages: {
+      Before: productImage("Wendy houses", "wendy house1 before.jpg"),
+      After: productImage("Wendy houses", "wendy houses1 after.jpg"),
+    },
+  },
+];
 const numberedImages = (folder: string, count: number, extensions?: Record<number, string>) =>
   Array.from(
     { length: count },
@@ -48,9 +107,11 @@ export const products: Product[] = [
       "A clean, practical exterior finish with options to personalise the layout",
       "A project conversation focused on your site, budget and intended use",
     ],
-    quotePrompt: "Tell us the size, location and purpose of your cabin so we can prepare the right quote.",
+    quotePrompt:
+      "Tell us the size, location and purpose of your cabin so we can prepare the right quote.",
     coverImage: nutecCabinCover,
     images: numberedImages("nutec-cabins", 29),
+    transformations: nutecTransformations,
   },
   {
     id: "log-cabins",
@@ -90,9 +151,11 @@ export const products: Product[] = [
       "Options for compact plots as well as larger storage requirements",
       "A custom discussion rather than a one-size-fits-all structure",
     ],
-    quotePrompt: "Tell us what you need to store or create, plus the available space in your garden.",
+    quotePrompt:
+      "Tell us what you need to store or create, plus the available space in your garden.",
     coverImage: wendyHouseCover,
     images: numberedImages("wendy-houses", 27),
+    transformations: wendyTransformations,
   },
   {
     id: "wooden-decking",
@@ -176,6 +239,7 @@ export const products: Product[] = [
       34: "jpeg",
       35: "jpeg",
     }),
+    transformations: pergolaTransformations,
   },
   {
     id: "carports",
@@ -194,7 +258,8 @@ export const products: Product[] = [
       "Planned to work with your driveway and property layout",
       "An opportunity to improve both convenience and curb appeal",
     ],
-    quotePrompt: "Let us know how many vehicles you need to cover and share a photo of the parking area.",
+    quotePrompt:
+      "Let us know how many vehicles you need to cover and share a photo of the parking area.",
     coverImage: carportImage,
     images: [carportImage],
   },
