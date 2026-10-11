@@ -342,17 +342,17 @@ function TransformationViewer({
 
   return (
     <section
-      className="border border-border bg-background p-4 sm:p-5"
+      className="border border-border bg-background p-3 sm:p-5"
       aria-label={`${productName} project transformations`}
     >
-      <div className="flex flex-wrap items-end justify-between gap-3">
+      <div className="flex flex-col gap-3 sm:flex-wrap sm:items-end sm:justify-between sm:gap-3">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-timber">
             Project journey
           </p>
           <h3 className="mt-1 font-display text-lg font-extrabold">See the transformation</h3>
         </div>
-        <div className="flex gap-1.5" aria-label="Choose a numbered project">
+        <div className="flex flex-wrap gap-1" aria-label="Choose a numbered project">
           {transformations.map((item, index) => (
             <button
               type="button"
@@ -360,14 +360,14 @@ function TransformationViewer({
               onClick={() => setProjectIndex(index)}
               aria-label={`View project ${item.number}`}
               aria-pressed={index === projectIndex}
-              className={`grid size-9 place-items-center rounded-full text-sm font-bold transition-colors ${index === projectIndex ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-accent"}`}
+              className={`grid size-8 shrink-0 place-items-center rounded-full text-xs font-bold transition-colors sm:size-9 sm:text-sm ${index === projectIndex ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-accent"}`}
             >
               {item.number}
             </button>
           ))}
         </div>
       </div>
-      <div className="mt-4 overflow-hidden bg-black">
+      <div className="mt-3 sm:mt-4 overflow-hidden bg-black">
         <div className="relative aspect-[4/3]">
           {image && (
             <img
@@ -377,15 +377,15 @@ function TransformationViewer({
               className="h-full w-full object-contain motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-[0.98] motion-safe:duration-500"
             />
           )}
-          <span className="absolute left-3 top-3 rounded-full bg-black/70 px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-white">
+          <span className="absolute left-2 top-2 sm:left-3 sm:top-3 rounded-full bg-black/70 px-2 py-1 text-xs font-extrabold uppercase tracking-wider text-white sm:px-3">
             {stage}
           </span>
-          <span className="absolute bottom-3 right-3 rounded-full bg-black/70 px-3 py-1 text-xs font-bold text-white">
+          <span className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 rounded-full bg-black/70 px-2 py-1 text-xs font-bold text-white sm:px-3">
             Project {project.number}
           </span>
         </div>
       </div>
-      <div className="mt-3 grid grid-cols-3 gap-2" aria-label="Choose a stage">
+      <div className="mt-2 sm:mt-3 grid grid-cols-3 gap-1.5 sm:gap-2" aria-label="Choose a stage">
         {PROJECT_STAGES.map((item) => {
           const stageImage = project.stages[item];
           const isAvailable = Boolean(stageImage);
@@ -409,7 +409,7 @@ function TransformationViewer({
                 )}
               </div>
               <span
-                className={`block px-2 py-1.5 text-xs font-bold ${isActive ? "bg-timber text-timber-foreground" : "bg-muted text-muted-foreground"}`}
+                className={`block px-1.5 py-1 text-xs font-bold sm:px-2 sm:py-1.5 ${isActive ? "bg-timber text-timber-foreground" : "bg-muted text-muted-foreground"}`}
               >
                 {item}
               </span>
@@ -417,7 +417,7 @@ function TransformationViewer({
           );
         })}
       </div>
-      <p className="mt-3 text-xs leading-5 text-muted-foreground">
+      <p className="mt-2 sm:mt-3 text-xs leading-5 text-muted-foreground">
         This view moves through the stages automatically. Select a numbered project or stage to
         explore at your own pace.
       </p>

@@ -85,7 +85,7 @@ const wendyTransformations: ProjectTransformation[] = [
     number: 1,
     stages: {
       Before: productImage("Wendy houses", "wendy house1 before.jpg"),
-      After: productImage("Wendy houses", "wendy houses1 after.jpg"),
+      After: productImage("Wendy houses", "wendy house1 after.jpg"),
     },
   },
 ];
@@ -244,11 +244,53 @@ export const products: Product[] = [
     images: [carportImage],
   },
 ];
-export const portfolioImages = products.flatMap((product) =>
-  product.images.map((src, index) => ({
-    src,
-    productName: product.name,
-    category: product.portfolioCategory,
-    alt: `${product.name} project ${index + 1} by Hot Mix Holdings`,
-  })),
-);
+
+// Extract transformation images for display
+const getTransformationImages = (product: Product) => {
+  if (!product.transformations) return [];
+  return product.transformations.flatMap((transformation) => {
+    const images = [];
+    if (transformation.stages.Before) {
+      images.push({
+        src: transformation.stages.Before,
+        productName: product.name,
+        category: product.portfolioCategory,
+        alt: `${product.name} project ${transformation.number}: Before by Hot Mix Holdings`,
+      });
+    }
+    if (transformation.stages.During) {
+      images.push({
+        src: transformation.stages.During,
+        productName: product.name,
+        category: product.portfolioCategory,
+        alt: `${product.name} project ${transformation.number}: During by Hot Mix Holdings`,
+      });
+    }
+    if (transformation.stages.After) {
+      images.push({
+        src: transformation.stages.After,
+        productName: product.name,
+        category: product.portfolioCategory,
+        alt: `${product.name} project ${transformation.number}: After by Hot Mix Holdings`,
+      });
+    }
+    return images;
+  });
+};
+
+export const portfolioImages = products.flatMap((product) => {
+  // Start with transformation images for products that have them
+  const transformationImages = getTransformationImages(product);
+  
+  // Then add regular gallery images
+  const galleryImages = product.images
+    .filter((src) => !transformationImages.some((t) => t.src === src))
+    .map((src, index) => ({
+      src,
+      productName: product.name,
+      category: product.portfolioCategory,
+      alt: `${product.name} project ${index + 1} by Hot Mix Holdings`,
+    }));
+  
+  return [...transformationImages, ...galleryImages];
+});
