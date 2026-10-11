@@ -115,7 +115,7 @@ function Header() {
             <span className="hidden sm:inline">Facebook</span>
           </a>
           <a
-            href="https://www.instagram.com/brendonsibandasibanda/"
+            href="https://www.instagram.com/hotmixholdings/"
             target="_blank"
             rel="noreferrer"
             aria-label="Visit Hot Mix Holdings on Instagram"
@@ -168,7 +168,7 @@ function Header() {
               Visit us on Facebook
             </a>
             <a
-              href="https://www.instagram.com/brendonsibandasibanda/"
+              href="https://www.instagram.com/hotmixholdings/"
               target="_blank"
               rel="noreferrer"
               className="border-b border-border py-4 font-semibold text-foreground"
@@ -988,7 +988,7 @@ function Index() {
                 Facebook
               </a>
               <a
-                href="https://www.instagram.com/brendonsibandasibanda/"
+                href="https://www.instagram.com/hotmixholdings/"
                 target="_blank"
                 rel="noreferrer"
                 className="flex gap-2"
