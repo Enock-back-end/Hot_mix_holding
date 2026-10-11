@@ -5,6 +5,7 @@ import nutecCabinCover from "@/assets/nutec-cabin.jpg";
 import pergolaCover from "@/assets/pergola.jpg";
 import wendyHouseCover from "@/assets/wendy-house.jpg";
 import woodenDeckCover from "@/assets/wooden-deck.jpg";
+import { productImageManifest } from "@/lib/product-image-manifest";
 
 export type Product = {
   id: string;
@@ -31,7 +32,9 @@ export type ProjectTransformation = {
 const productImage = (folder: string, filename: string) => `/products/${folder}/${filename}`;
 
 const galleryImages = (folder: string, filenames: string[]) =>
-  filenames.map((filename) => productImage(folder, filename));
+  [...new Set([...(productImageManifest[folder] ?? []), ...filenames])].map((filename) =>
+    productImage(folder, filename),
+  );
 
 const nutecTransformations: ProjectTransformation[] = [
   [2, "nutec cabins 2 before.jpeg", undefined, "nutec cabins 2 after.jpeg"],
