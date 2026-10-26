@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { GOOGLE_ADS_CONVERSION_ID, hasGoogleAdsConversionConfig } from "../lib/contact";
 
 function NotFoundComponent() {
   return (
@@ -112,13 +113,19 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="en">
       <head>
         <HeadContent />
-        {/* Google Ads: replace AW-YOUR_CONVERSION_ID with the real account ID before launch. */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-YOUR_CONVERSION_ID" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'AW-YOUR_CONVERSION_ID');`,
-          }}
-        />
+        {hasGoogleAdsConversionConfig && (
+          <>
+            <script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_CONVERSION_ID}`}
+            />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '${GOOGLE_ADS_CONVERSION_ID}');`,
+              }}
+            />
+          </>
+        )}
       </head>
       <body>
         {children}

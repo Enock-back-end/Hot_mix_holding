@@ -1,8 +1,11 @@
 import type { MouseEvent, ReactNode } from "react";
 
-// Replace both placeholders with the values supplied by Google Ads before publishing.
-export const GOOGLE_ADS_CONVERSION_ID = "AW-YOUR_CONVERSION_ID";
-export const GOOGLE_ADS_CONVERSION_LABEL = "YOUR_CONVERSION_LABEL";
+// Configure these from the Google Ads conversion setup in the deployment environment.
+// The customer ID alone is not enough; conversions also need the action's label.
+export const GOOGLE_ADS_CONVERSION_ID = import.meta.env.VITE_GOOGLE_ADS_ID ?? "";
+export const GOOGLE_ADS_CONVERSION_LABEL = import.meta.env.VITE_GOOGLE_ADS_CONVERSION_LABEL ?? "";
+export const hasGoogleAdsConversionConfig =
+  /^AW-\d+$/.test(GOOGLE_ADS_CONVERSION_ID) && Boolean(GOOGLE_ADS_CONVERSION_LABEL);
 export const BUSINESS_EMAIL = "reniuszema22@gmail.com";
 export const WHATSAPP_NUMBER = "27728423412";
 
@@ -48,7 +51,7 @@ export function reportQuoteConversion(destination: string) {
       window.location.assign(destination);
     }
   };
-  if (typeof window.gtag !== "function") {
+  if (!hasGoogleAdsConversionConfig || typeof window.gtag !== "function") {
     continueToContact();
     return;
   }
