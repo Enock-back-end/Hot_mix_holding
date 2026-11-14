@@ -1,7 +1,7 @@
 import type { MouseEvent, ReactNode } from "react";
 
 export const GOOGLE_ADS_CONVERSION_ID = "AW-18462263651";
-export const GOOGLE_ADS_CONVERSION_LABEL = "7-yfCJOIubgdEOOSv-NE";
+export const GOOGLE_ADS_CONVERSION_LABEL = "bl3NCKqUvrgdEOOSv-NE";
 export const hasGoogleAdsConversionConfig =
   /^AW-\d+$/.test(GOOGLE_ADS_CONVERSION_ID) && Boolean(GOOGLE_ADS_CONVERSION_LABEL);
 export const BUSINESS_EMAIL = "reniuszema22@gmail.com";
@@ -17,7 +17,7 @@ export function quoteMessage(productName = "a project") {
   return `Hi, I would like to request a quote for ${productName}.`;
 }
 export function whatsappQuoteUrl(productName?: string) {
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(quoteMessage(productName))}`;
+  return `https://api.whatsapp.com/send/?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(quoteMessage(productName))}&type=phone_number&app_absent=0`;
 }
 export function emailQuoteUrl(productName?: string) {
   const subject = `Quote Request - ${productName ?? "Hot Mix Holdings project"}`;
@@ -56,8 +56,6 @@ export function gtag_report_conversion(destination: string): false {
   try {
     window.gtag("event", "conversion", {
       send_to: `${GOOGLE_ADS_CONVERSION_ID}/${GOOGLE_ADS_CONVERSION_LABEL}`,
-      value: 1.0,
-      currency: "ZAR",
       event_callback: continueToContact,
     });
     window.setTimeout(continueToContact, 700);
