@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button";
 import {
   quoteFormEmailUrl,
   QuoteLink,
-  reportQuoteConversion,
+  gtag_report_conversion,
   type QuoteRequest,
 } from "@/lib/contact";
 import {
@@ -200,7 +200,7 @@ function QuoteForm() {
     setRequest((current) => ({ ...current, [field]: value }));
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    reportQuoteConversion(quoteFormEmailUrl(request));
+    gtag_report_conversion(quoteFormEmailUrl(request));
   };
   const fieldClass =
     "mt-1.5 min-h-11 w-full rounded-sm border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring";

@@ -1,9 +1,7 @@
 import type { MouseEvent, ReactNode } from "react";
 
-// Configure these from the Google Ads conversion setup in the deployment environment.
-// The customer ID alone is not enough; conversions also need the action's label.
-export const GOOGLE_ADS_CONVERSION_ID = import.meta.env.VITE_GOOGLE_ADS_ID ?? "";
-export const GOOGLE_ADS_CONVERSION_LABEL = import.meta.env.VITE_GOOGLE_ADS_CONVERSION_LABEL ?? "";
+export const GOOGLE_ADS_CONVERSION_ID = "AW-18462263651";
+export const GOOGLE_ADS_CONVERSION_LABEL = "7-yfCJOIubgdEOOSv-NE";
 export const hasGoogleAdsConversionConfig =
   /^AW-\d+$/.test(GOOGLE_ADS_CONVERSION_ID) && Boolean(GOOGLE_ADS_CONVERSION_LABEL);
 export const BUSINESS_EMAIL = "reniuszema22@gmail.com";
@@ -43,7 +41,7 @@ export function quoteFormEmailUrl(request: QuoteRequest) {
 }
 
 /** Reports the Ads conversion if gtag is available, but never blocks contact navigation. */
-export function reportQuoteConversion(destination: string) {
+export function gtag_report_conversion(destination: string): false {
   let navigated = false;
   const continueToContact = () => {
     if (!navigated) {
@@ -53,17 +51,20 @@ export function reportQuoteConversion(destination: string) {
   };
   if (!hasGoogleAdsConversionConfig || typeof window.gtag !== "function") {
     continueToContact();
-    return;
+    return false;
   }
   try {
     window.gtag("event", "conversion", {
       send_to: `${GOOGLE_ADS_CONVERSION_ID}/${GOOGLE_ADS_CONVERSION_LABEL}`,
+      value: 1.0,
+      currency: "ZAR",
       event_callback: continueToContact,
     });
     window.setTimeout(continueToContact, 700);
   } catch {
     continueToContact();
   }
+  return false;
 }
 
 type QuoteLinkProps = {
@@ -78,7 +79,7 @@ export function QuoteLink({ channel, productName, className, children, ...props 
     channel === "whatsapp" ? whatsappQuoteUrl(productName) : emailQuoteUrl(productName);
   const onClick = (event: MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
-    reportQuoteConversion(destination);
+    gtag_report_conversion(destination);
   };
   return (
     <a href={destination} onClick={onClick} className={className} {...props}>
